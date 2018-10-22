@@ -5,9 +5,9 @@
 #include <windows.h>
 
 
-int** alocarMatriz(int Linhas,int Colunas){
-  int i,j,k;
-  k=1;
+int preencheMatriz(int Linhas,int Colunas){
+  int i, j;
+  int k = 1;
 
   int **m = (int**)malloc(Linhas * sizeof(int*));
 
@@ -33,7 +33,7 @@ void ImprimeJogo(int **mat)
         printf("\n");
         for(j=0;j<4;j++)
         {
-            printf("%d ",mat[i][j]);
+            printf(" %d ",mat[i][j]);
         }
     }
 }
@@ -143,6 +143,36 @@ void Move(int **mat)
         }
     }while(sair);
 
+}
 
+int shuffleArray(int *vTemp, int tamanho)
+{
+	int random = rand() % (tamanho);
+	int temp;
 
+	temp = vTemp[tamanho - 1];
+	vTemp[tamanho - 1] = vTemp[random];
+	vTemp[random] = temp;
+
+	if (tamanho > 1)
+		shuffleArray(vTemp, tamanho - 1);
+			
+		return 0;
+}
+
+/*Contagem de Inversões (i1 < i2 && pos[i1] > pos[i2]) RETORNA 0 SE PAR, 1 SE IMPAR ou 2 SE ORDENADO*/
+int inversion_Parity(int *vetor, int tamanho)
+{
+	int cont = 0;
+	for (int i = 0; i < tamanho - 1; i++)
+		for (int j = i + 1; j < tamanho; j++)
+		{
+			if (vetor[i] > vetor[j] && vetor[j] != 0)
+				cont++;
+		}
+
+	if(cont > 0)
+		return cont % 2;
+
+	return 2;
 }
