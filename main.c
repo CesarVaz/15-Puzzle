@@ -5,6 +5,7 @@
 
 int main(void)
 {
+    srand(time(NULL));
     int **MatrizPuzzle;
     MatrizPuzzle = alocarMatriz(4,4);
     ImprimeJogo(MatrizPuzzle);
