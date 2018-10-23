@@ -1,0 +1,49 @@
+mudei todos os parametros para receber matriz alocada automaticamente e troquei funçao que cria a matriz
+
+a matriz aleatória é validada para ser solucionável
+
+alterei returnPos e funções move:
+
+matriz[i][j]
+eixo Y = i (linha)
+eixo X = j (coluna)
+
+
+
+FUNCAO PREENCHEMATRIZ COM COMENTÁRIOS:
+int preencheMatriz(int mat[4][4])
+{
+	int i, j, k = 0;
+	int array[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+
+	while(inversion_Parity(array, 16) == 2)
+		shuffleArray(array, 16);
+
+	for (i = 0; i < 4; i++)
+		for (j = 0; j < 4; j++)
+			mat[i][j] = array[k++];
+
+	/*se N, do puzzle N*N - 1, for par ele é solucionavel se:
+	o quadrado vazio esta numa linha par, contando de baixo pra cima e o numero de inversões é impar
+	OU se o quadrado vazio está numa linha impar (de baixo pra cima) e o numero de inversoes é par
+	O IF ABAIXO É O CASO ONDE O 15 PUZZLE NÃO É SOLUCIONAVEL*/
+	if (ReturnPos(mat).y % 2 == inversion_Parity(array, 16))
+	{
+		/*remove uma paridade( torna o puzzle solucionavel )*/
+		i = 0; j = 0;
+		while (mat[i][j] < mat[i][j + 1] || mat[i][j + 1] == 0)
+		{
+			j++;
+			if (j == 4)
+			{
+				j = 0;
+				i++;
+			}
+		}
+		int temp = mat[i][j];
+		mat[i][j] = mat[i][j + 1];
+		mat[i][j + 1] = temp;
+	}
+
+	return 0;
+}
