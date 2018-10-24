@@ -13,7 +13,7 @@ int inversion_Parity(int *vetor, int tamanho);
 int validaJogo(int mat[4][4], int *array);
 void ImprimeJogo(int mat[4][4]);
 
-Ponto ReturnPos(int mat[4][4]);
+Ponto ReturnPos(int mat[4][4], int p);
 
 void MoveUp(int mat[4][4]);
 void MoveDown(int mat[4][4]);
