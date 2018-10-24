@@ -19,7 +19,7 @@ int preencheMatriz(int mat[4][4])
 	return 0;
 }
 
-/*Contagem de Inversıes (i1 < i2 && pos[i1] > pos[i2]) RETORNA 0 SE PAR, 1 SE IMPAR ou 2 SE ORDENADO*/
+/*Contagem de Invers√µes (i1 < i2 && pos[i1] > pos[i2]) RETORNA 0 SE PAR, 1 SE IMPAR ou 2 SE ORDENADO*/
 int inversion_Parity(int *array, int size)
 {
 	int cont = 0;
@@ -54,7 +54,7 @@ int shuffleArray(int *array, int size)
 int validaJogo(int mat[4][4], int *array)
 {
 	int i = 0, j = 0;
-	if (ReturnPos(mat).y % 2 == inversion_Parity(array, 16))
+	if (ReturnPos(mat,0).y % 2 == inversion_Parity(array, 16))
 	{
 		while (mat[i][j] < mat[i][j + 1] || mat[i][j + 1] == 0)
 		{
@@ -89,16 +89,17 @@ void ImprimeJogo(int mat[4][4])
     }
 }
 
-Ponto ReturnPos(int mat[4][4])
+Ponto ReturnPos(int mat[4][4], int p)
 {
-	int i, j;
+	int i, j,pos;
 	Ponto Coord;
+	pos = p;
 
 	for (i = 0; i<4; i++)
 	{
 		for (j = 0; j<4; j++)
 		{
-			if (mat[i][j] == 0)
+			if (mat[i][j] == pos)
 			{
 				Coord.y = i;
 				Coord.x = j;
@@ -111,7 +112,7 @@ Ponto ReturnPos(int mat[4][4])
 void MoveUp(int mat[4][4])
 {
 	Ponto Coord_xy;
-	Coord_xy = ReturnPos(mat);
+	Coord_xy = ReturnPos(mat,0);
 	system("cls");
 
 	if (Coord_xy.y > 0)
@@ -124,7 +125,7 @@ void MoveUp(int mat[4][4])
 void MoveDown(int mat[4][4])
 {
 	Ponto Coord_xy;
-	Coord_xy = ReturnPos(mat);
+	Coord_xy = ReturnPos(mat,0);
 	system("cls");
 	if (Coord_xy.y < 3)
 	{
@@ -136,7 +137,7 @@ void MoveDown(int mat[4][4])
 void MoveLeft(int mat[4][4])
 {
 	Ponto Coord_xy;
-	Coord_xy = ReturnPos(mat);
+	Coord_xy = ReturnPos(mat,0);
 	system("cls");
 	if (Coord_xy.x > 0)
 	{
@@ -148,7 +149,7 @@ void MoveLeft(int mat[4][4])
 void MoveRight(int mat[4][4])
 {
 	Ponto Coord_xy;
-	Coord_xy = ReturnPos(mat);
+	Coord_xy = ReturnPos(mat,0);
 	system("cls");
 	if (Coord_xy.x < 3)
 	{
