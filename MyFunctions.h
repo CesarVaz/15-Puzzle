@@ -7,24 +7,19 @@ typedef struct Coordenadas
     int x,y;
 }Ponto;
 
+int preencheMatriz(int mat[4][4]);
+int shuffleArray(int *array, int size);
+int inversion_Parity(int *vetor, int tamanho);
+int validaJogo(int mat[4][4], int *array);
+void ImprimeJogo(int mat[4][4]);
 
-int** alocarMatriz(int Linhas,int Colunas);
+Ponto ReturnPos(int mat[4][4], int p);
 
-void ImprimeJogo(int **mat);
-
-Ponto ReturnPos(int **mat);
-
-void MoveUp(int **mat);
-
-void MoveDown(int **mat);
-
-void MoveLeft(int **mat);
-
-void MoveRight(int **mat);
-
-void Move(int **mat);
-
-
+void MoveUp(int mat[4][4]);
+void MoveDown(int mat[4][4]);
+void MoveLeft(int mat[4][4]);
+void MoveRight(int mat[4][4]);
+void Move(int mat[4][4]);
 
 
 #endif // MYFUNCTIONS_H_INCLUDED
