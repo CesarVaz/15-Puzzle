@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>
-#include "MyFunctions.h"
 #include <time.h>
+#include "Jogo.h"
 
 int main(void)
 {
@@ -14,6 +13,5 @@ int main(void)
 
 	Move(matriz);
 
-	_getch();
     return 0;
 }
