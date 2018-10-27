@@ -1,3 +1,14 @@
+27/10
+DISTANCIA DE MANHATTAN
+LISTA DE ESTADOS POR ONDE JA SE PASSOU
+SOLVER INICIADO
+
+TALVEZ TENHA ALGUM PROBLEMA DE ALOCACAO NA LISTADUPLA
+
+
+
+
+24/10
 mudei todos os parametros para receber matriz alocada automaticamente e troquei funçao que cria a matriz
 
 a matriz aleatória é validada para ser solucionável
