@@ -23,3 +23,4 @@ int addPos(ListaDuplaEstado **lista, int mat[4][4], int posicao);
 int isMatrizContida(int mat[4][4], ListaDuplaEstado *lista);
 
 int getPos(int mat[4][4], ListaDuplaEstado *lista, int posicao);
+void limpaLista(ListaDuplaEstado **lista);

@@ -149,20 +149,27 @@ int removePos(ListaDuplaEstado **lista, int posicao)
  */
 int indexOf(ListaDuplaEstado *lista, int mat[4][4])
 {
-	if (lista == NULL)
-		return -1;
-
-	int pos = -1, cont = 0;
-	while (lista != NULL && pos == -1)
+	int pos = -1;
+	int igual = 0;
+	int i, j;
+	while (lista != NULL && igual == 0)
 	{
-		if (isMatrizContida(mat, lista) == 0);
-			pos = cont;
-
+		pos++;
+		igual = 1;
+		for (i = 0; i < 4 && igual == 1; i++)
+		{
+			for (j = 0; j < 4 && igual == 1; j++)
+			{
+				if (mat[i][j] != lista->estado[i][j])
+					igual = 0;
+			}
+		}
 		lista = lista->proximo;
-		cont++;
 	}
-
-    return pos;
+	if (igual == 1)
+		return pos;
+	else
+		return -1;
 }
 
 /**
@@ -174,7 +181,7 @@ int indexOf(ListaDuplaEstado *lista, int mat[4][4])
  */
 int removeEstado(ListaDuplaEstado **lista, int mat[4][4])
 {
-	return removePos(&(*lista), indexOf(*lista, mat));
+	return removePos(lista, indexOf(*lista, mat));
 }
 
 /**
@@ -275,4 +282,11 @@ int getPos(int mat[4][4], ListaDuplaEstado *lista, int posicao)
 			mat[i][j] = lista->estado[i][j];
 
 	return 0;
+}
+
+void limpaLista(ListaDuplaEstado **lista)
+{
+	int i = 0;
+	while (removePos(lista, i++) != -1);
+	return;
 }
