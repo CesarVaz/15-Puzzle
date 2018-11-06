@@ -7,18 +7,21 @@ int inverte(ListaDuplaEstado **lista)
 	if (*lista == NULL || (*lista)->proximo == NULL)
 		return 0;
 
-	while ((*lista)->proximo != NULL)
+	ListaDuplaEstado *iterador = *lista;
+	while (iterador != NULL)
 	{
-		*lista = (*lista)->proximo;
-		if ((*lista)->anterior->anterior == NULL)
-			(*lista)->anterior->proximo = NULL;
-		else
-			(*lista)->anterior->proximo = (*lista)->anterior->anterior;
-		(*lista)->anterior->anterior = *lista;
+		iterador->anterior = iterador->proximo;
+		iterador = iterador->proximo;
 	}
-	(*lista)->proximo = (*lista)->anterior;
-	(*lista)->anterior = NULL;
-	
+	iterador = *lista;
+	iterador->proximo = NULL;
+	while (iterador->anterior != NULL)
+	{
+		(iterador->anterior)->proximo = iterador;
+		iterador = iterador->anterior;
+	}
+	*lista = iterador;
+
 	return 0;
 }
 
@@ -55,24 +58,6 @@ int insert(ListaDuplaEstado **lista, int matriz[4][4])
 }
 
 /**
- * Retorna o valor contido na lista na posição pedida
- * @param lista Lista
- * @param posicao Posição do elemento desejado
- * @return Valor contido na posição
- */
-int **get(ListaDuplaEstado *lista, int posicao)
-{
-	int cont = 0;
-	while (cont != posicao)
-	{
-		lista = lista->proximo;
-		cont++;
-	}
-
-	return lista->estado;
-}
-
-/**
  * Conta o número de elementos na lista e retorna este valor
  * @param lista Lista
  * @return Número de elementos na lista
@@ -82,12 +67,11 @@ int tamanho(ListaDuplaEstado *lista)
 	if (lista == NULL)
 		return 0;
 
-	int tam = 1;
-
-	while (lista->proximo != NULL)
+	int tam = 0;
+	while (lista != NULL)
 	{
-		lista = lista->proximo;
 		tam++;
+		lista = lista->proximo;
 	}
 
     return tam;
@@ -108,6 +92,7 @@ int removePos(ListaDuplaEstado **lista, int posicao)
 	if (posicao == 0)
 	{
 		excluir = *lista;
+		*lista = NULL;
 		if(tamanho(*lista) > 1)
 		{
 			*lista = (*lista)->proximo;
@@ -147,7 +132,7 @@ int removePos(ListaDuplaEstado **lista, int posicao)
  * @param valor Valor a ser buscado na lista
  * @return Posição do valor. Caso não haja ocorrências, retorna -1
  */
-int indexOf(ListaDuplaEstado *lista, int mat[4][4])
+int indiceDoEstado(ListaDuplaEstado *lista, int mat[4][4])
 {
 	int pos = -1;
 	int igual = 0;
@@ -181,7 +166,7 @@ int indexOf(ListaDuplaEstado *lista, int mat[4][4])
  */
 int removeEstado(ListaDuplaEstado **lista, int mat[4][4])
 {
-	return removePos(lista, indexOf(*lista, mat));
+	return removePos(lista, indiceDoEstado(*lista, mat));
 }
 
 /**
@@ -265,9 +250,9 @@ int isMatrizContida(int mat[4][4], ListaDuplaEstado *lista)
 	return igual;
 }
 
-int getPos(int mat[4][4], ListaDuplaEstado *lista, int posicao)
+int getEstadoFromPos(int mat[4][4], ListaDuplaEstado *lista, int posicao)
 {
-	if (lista == NULL || posicao >= tamanho(lista))
+	if (lista == NULL || posicao >= tamanho(lista) || posicao < 0)
 		return -1;
 
 	int cont = 0;
@@ -286,7 +271,6 @@ int getPos(int mat[4][4], ListaDuplaEstado *lista, int posicao)
 
 void limpaLista(ListaDuplaEstado **lista)
 {
-	int i = 0;
-	while (removePos(lista, i++) != -1);
+	while (removePos(lista, 0) != -1);
 	return;
 }
