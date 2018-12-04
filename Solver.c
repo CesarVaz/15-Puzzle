@@ -3,7 +3,7 @@
 #include "Jogo.h"
 #include "Movimentos.h"
 
-int melhorCaminho(int matriz[4][4], ListaDuplaEstado **listaEstado, ListaDuplaEstado **listaEstadosDefinitivos, ListaTravaPeca **listaPecasTravadas)
+int encontraCaminho(int matriz[4][4], ListaDuplaEstado **listaEstado, ListaDuplaEstado **listaEstadosDefinitivos, ListaInt **listaPecasTravadas)
 {
 	if (isMatrizContida(matriz, *listaEstado) == 0)
 	{
@@ -21,14 +21,14 @@ int melhorCaminho(int matriz[4][4], ListaDuplaEstado **listaEstado, ListaDuplaEs
 		opcoes[i].dir = i;
 
 	avaliaProximosPassos(matriz, opcoes, *listaEstado, *listaPecasTravadas);
-	selectSortManhattan(opcoes, 4);
+	selectSortHeuristica(opcoes, 4);
 	for (i = 0; i < 4; i++)
 	{
-		if(opcoes[i].Manhattan != -1)
+		if(opcoes[i].heuristica != -1)
 		{
 
 			Move(matriz, opcoes[i].dir);
-			if(melhorCaminho(matriz, listaEstado, listaEstadosDefinitivos, listaPecasTravadas) == 1)
+			if(encontraCaminho(matriz, listaEstado, listaEstadosDefinitivos, listaPecasTravadas) == 1)
 				return 1;
 
 			removeEstado(listaEstadosDefinitivos, matriz);
@@ -38,7 +38,7 @@ int melhorCaminho(int matriz[4][4], ListaDuplaEstado **listaEstado, ListaDuplaEs
 	return 0;
 }
 
-void avaliaProximosPassos(int mat[4][4], movimento opcoes[], ListaDuplaEstado *listaEstado, ListaTravaPeca *listaTravaPeca)
+void avaliaProximosPassos(int mat[4][4], movimento opcoes[], ListaDuplaEstado *listaEstado, ListaInt *listaTravaPeca)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -46,16 +46,16 @@ void avaliaProximosPassos(int mat[4][4], movimento opcoes[], ListaDuplaEstado *l
 		{
 			if (isMatrizContida(mat, listaEstado) == 0 && isMoveuPecaTravada(mat, listaTravaPeca) == 0)
 			{
-				opcoes[i].Manhattan = (ManhattanDistance(mat) * 2);
-				opcoes[i].Manhattan += (inversion_Parity2D(mat) * 1);
+				opcoes[i].heuristica = (ManhattanDistance(mat) * 1);
+				opcoes[i].heuristica += (inversion_Parity2D(mat) * 1);
 			}
 			else
-				opcoes[i].Manhattan = -1;
+				opcoes[i].heuristica = -1;
 
 			desfazMovimento(mat, opcoes[i].dir);
 		}
 		else
-			opcoes[i].Manhattan = -1;
+			opcoes[i].heuristica = -1;
 	}
 	return;
 }
@@ -90,7 +90,7 @@ int distanciaDaPeca(int mat[4][4], int valor)
 	return -1;
 }
 
-void selectSortManhattan(movimento vetor[], int size)
+void selectSortHeuristica(movimento vetor[], int size)
 {
 	if (size <= 1)
 		return;
@@ -98,11 +98,11 @@ void selectSortManhattan(movimento vetor[], int size)
 	int posMenor = 0;
 	for (int i = 0; i < size; i++)
 	{
-		if (vetor[posMenor].Manhattan > vetor[i].Manhattan)
+		if (vetor[posMenor].heuristica > vetor[i].heuristica)
 			posMenor = i;
 	}
 	swap(&(vetor[posMenor]), &(vetor[0]));
-	selectSortManhattan(&(vetor[1]), size - 1);
+	selectSortHeuristica(&(vetor[1]), size - 1);
 
 	return;
 }
@@ -116,30 +116,41 @@ void swap(movimento *a, movimento *b)
 	return;
 }
 
-void travaPecas(int mat[4][4], ListaTravaPeca **listaPecasTravadas)
+void travaPecas(int mat[4][4], ListaInt **listaPecasTravadas)
 {
 	int i = 1;
 	while (distanciaDaPeca(mat, i) == 0 && i < 16)
 	{
-		if (i < 9 && isPecaContidaNaLista(i, *listaPecasTravadas) == 0)
+		if (i < 9 && isContido(i, *listaPecasTravadas) == 0)
 		{
 			if (i == 3 || i == 7)
 			{
 				if (distanciaDaPeca(mat, i + 1) == 0)
 				{
-					insert_ListaTravaPeca(listaPecasTravadas, i);
-					insert_ListaTravaPeca(listaPecasTravadas, i + 1);
+					insertListaInt(listaPecasTravadas, i);
+					insertListaInt(listaPecasTravadas, i + 1);
 				}
 			}
 			else
-			insert_ListaTravaPeca(listaPecasTravadas, i);
+			insertListaInt(listaPecasTravadas, i);
 		}
 		i++;
 	}
 	return;
 }
 
-int setDoOtimizarMovimentos(ListaDuplaEstado *listaEstado, ListaMovimentosOtimizados **listaMovimentosOtimizados)
+int isMoveuPecaTravada(int mat[4][4], ListaInt *lista)
+{
+	while (lista != NULL)
+	{
+		if (distanciaDaPeca(mat, lista->valor) != 0)
+			return 1;
+		lista = lista->proximo;
+	}
+	return 0;
+}
+
+int setDoOtimizarMovimentos(ListaDuplaEstado *listaEstado, ListaInt **listaMovimentosOtimizados)
 {
 	int estadoInicial[4][4];
 	getEstadoFromPos(estadoInicial, listaEstado, 0);
@@ -147,7 +158,7 @@ int setDoOtimizarMovimentos(ListaDuplaEstado *listaEstado, ListaMovimentosOtimiz
 	return otimizarMovimentos(estadoInicial, listaEstado, listaMovimentosOtimizados, 0);
 }
 
-int otimizarMovimentos(int estadoAtual[4][4], ListaDuplaEstado *listaEstado, ListaMovimentosOtimizados **listaMovimentosOtimizados, int indice)
+int otimizarMovimentos(int estadoAtual[4][4], ListaDuplaEstado *listaEstado, ListaInt **listaMovimentosOtimizados, int indice)
 {
 	int direcao = -1;
 	for (int i = 0; i < 4; i++)
@@ -164,7 +175,7 @@ int otimizarMovimentos(int estadoAtual[4][4], ListaDuplaEstado *listaEstado, Lis
 	}
 	if (direcao != -1)
 	{
-		insert_ListaMovimentosOtimizados(listaMovimentosOtimizados, direcao);
+		insertListaInt(listaMovimentosOtimizados, direcao);
 		getEstadoFromPos(estadoAtual, listaEstado, indice);
 		if (indice == tamanho(listaEstado) - 1)
 			return 1;
@@ -175,21 +186,21 @@ int otimizarMovimentos(int estadoAtual[4][4], ListaDuplaEstado *listaEstado, Lis
 	return otimizarMovimentos(estadoAtual, listaEstado, listaMovimentosOtimizados, indice);
 }
 
-int resolver(int matriz[4][4], ListaMovimentosOtimizados **listaMovimentosOtimizados)
+int resolver(int matriz[4][4], ListaInt **listaMovimentosOtimizados)
 {
-	int tamanho = tamanhoListaDirecao(*listaMovimentosOtimizados);
+	int tamanho = tamanhoListaInt(*listaMovimentosOtimizados);
 
 system("cls");
 ImprimeJogo(matriz);
 
 	while (tamanho > 0)
 	{
-		Move(matriz, (*listaMovimentosOtimizados)->direcao);
+		Move(matriz, (*listaMovimentosOtimizados)->valor);
 
 system("cls");
 ImprimeJogo(matriz);
 
-		removePosDirecao(listaMovimentosOtimizados, 0);
+		removePosListaInt(listaMovimentosOtimizados, 0);
 		tamanho--;
 	}
 	return 0;

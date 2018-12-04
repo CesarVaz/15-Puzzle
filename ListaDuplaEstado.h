@@ -1,5 +1,5 @@
 #pragma once
-
+/*Lista de estados (estados sao configuracoes da matriz que representa o tabuleiro)*/
 typedef struct ListaDuplaEstado
 {
 	int estado[4][4];
